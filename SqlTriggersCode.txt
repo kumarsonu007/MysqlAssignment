@@ -1,0 +1,145 @@
+//code for before delete trigger
+CREATE TABLE X_employees (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  employeeNumber INT NOT NULL,
+  name VARCHAR(50) NOT NULL,
+  leavingDate DATETIME DEFAULT NULL,
+  action VARCHAR(50) DEFAULT NULL
+);
+
+DELIMITER $$
+CREATE TRIGGER after_employee_left 
+  BEFORE DELETE ON employees
+  FOR EACH ROW 
+BEGIN
+  INSERT INTO X_employees
+  SET action = 'delete',
+   employeeNumber = OLD.empID,
+      name = OLD.empname,
+      leavingDate = NOW(); 
+END$$
+DELIMITER ;
+
+SHOW TRIGGERS;
+
+DELETE from employees where empname = 'sahil';
+
+SELECT * FROM X_employees;
+
+
+
+
+//code for before insert trigger
+CREATE TABLE employees_added_at_time (
+  InsertedAtTime DATETIME DEFAULT NULL,
+  action VARCHAR(50) DEFAULT NULL
+);
+
+DELIMITER $$
+CREATE TRIGGER before_employee_insert 
+  BEFORE DELETE ON employees
+  FOR EACH ROW 
+BEGIN
+  INSERT INTO employees_added_at_time 
+  SET action = 'insert',
+      InsertedAtTime = NOW(); 
+END$$
+DELIMITER ;
+
+SHOW TRIGGERS;
+
+insert into employees values (11,'sahil','IT');
+
+SELECT * FROM employees_added_at_time ;
+
+
+//code for after insert trigger
+CREATE TABLE employees_after_insert (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  employeeNumber INT NOT NULL,
+  name VARCHAR(50) NOT NULL,
+  insertDate DATETIME DEFAULT NULL,
+  action VARCHAR(50) DEFAULT NULL
+);
+
+DELIMITER $$
+CREATE TRIGGER employee_left 
+  BEFORE DELETE ON employees
+  FOR EACH ROW 
+BEGIN
+  INSERT INTO employees_after_insert
+  SET action = 'insert',
+   employeeNumber = NEW.empID,
+      name = NEW.empname,
+      joiningDate = NOW(); 
+END$$
+DELIMITER ;
+
+SHOW TRIGGERS;
+
+INSERT into employees values (1,'abc',15);
+
+SELECT * FROM employees_after_insert
+
+
+
+//code for after delete trigger
+
+CREATE TABLE employees_who_left (
+id INT AUTO_INCREMENT PRIMARY KEY,
+employeeNumber INT NOT NULL,
+name VARCHAR(50) NOT NULL,
+leavingDate DATETIME DEFAULT NULL,
+action VARCHAR(50) DEFAULT NULL
+);
+
+DELIMITER $$
+CREATE TRIGGER employee_left 
+BEFORE DELETE ON employees
+FOR EACH ROW 
+BEGIN
+INSERT INTO employees_who_left 
+SET action = 'delete',
+ employeeNumber = OLD.empID,
+    name = OLD.empname,
+    leavingDate = NOW(); 
+END$$
+DELIMITER ;
+
+SHOW TRIGGERS;
+
+DELETE from employees where name = 'sahil';
+
+SELECT * FROM employees_who_left 
+
+
+
+//code for after update trigger
+
+CREATE TABLE changed_name_of_employees(
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  employeeNumber INT NOT NULL,
+  name VARCHAR(50) NOT NULL,
+  changedate DATETIME DEFAULT NULL,
+  action VARCHAR(50) DEFAULT NULL
+);
+
+DELIMITER $$
+CREATE TRIGGER before_employee_update 
+  BEFORE UPDATE ON employees
+  FOR EACH ROW 
+BEGIN
+  INSERT INTO changed_name_of_employees
+  SET action = 'update',
+   employeeNumber = OLD.empID,
+      oldname = OLD.name,
+	newname = NEW.name        
+	changedate = NOW(); 
+END$$
+DELIMITER ;
+	
+SHOW TRIGGERS;
+
+UPDATE employees SET name = 'Phan'WHERE empID = 10;
+
+SELECT * FROM changed_name_of_employees;

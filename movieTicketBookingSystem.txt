@@ -1,0 +1,43 @@
+//Creating Tables
+
+CREATE table Movies (
+movieID int(10),
+movieName nvarchar(30),
+duration TIME,
+type nvarchar(20),
+Primary Key(movieId)
+);
+
+
+Create table Bookings (
+bookingId INT(10) AUTO INCREAMENT,
+movieName nvarchar(20),
+Primary Key(bookingId)
+);
+
+
+Create table Customers (
+custName nvarchar(30),
+custID INT(20) PRIMARY KEY,
+phoneNo Number(10),
+bookingId INT(10),
+Foreign Key(bookingId) references Bookings
+); 
+//procedure to book a new ticket 
+CREATE PROCEDURE BookTicket @movieName nvarchar(30) @movieId nvarchar(30), @price int(10)
+AS
+SELECT * FROM Customers WHERE movieName = @movieName AND movieId = @movieId AND price = @price
+GO;
+
+EXEC BookTicket movieName = "bharat" AND movieId = 12 AND price = 180;
+
+
+
+//Procedure to get the booking details based on different input parameters
+//1.
+CREATE PROCEDURE GetBookingDetails @BookingId nvarchar(30)
+AS
+SELECT * FROM Bookings WHERE bookingId = @BookingId 
+GO;
+
+EXEC GetBookingDetails BookingId = "1213";
